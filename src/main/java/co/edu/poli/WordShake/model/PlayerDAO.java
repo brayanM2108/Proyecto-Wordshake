@@ -8,4 +8,13 @@ public interface PlayerDAO {
 
     Player getById(Integer id) throws SQLException;
 
+    Player getByName(String name) throws SQLException;
+
+    Player getByPosition(String name) throws SQLException;
+
+    Player getByTeamId(String name) throws SQLException;
+
+    Player getByLeagueId(String name) throws SQLException;
+
+
 }

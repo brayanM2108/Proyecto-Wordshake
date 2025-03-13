@@ -15,6 +15,7 @@ public class PlayerDAOImpl implements PlayerDAO {
         return DatabaseConnection.getInstance();
     }
 
+    @Override
     public List<Player> findAll() throws SQLException {
         List<Player> players = new ArrayList<>();
         String query = "SELECT p.id, p.name, p.position, t.id AS team_id, t.name AS team_name " +
@@ -34,7 +35,7 @@ public class PlayerDAOImpl implements PlayerDAO {
         return players;
 
     }
-
+    @Override
     public Player getById(Integer id) throws SQLException {
         Player player = null;
         String query = """
@@ -53,6 +54,80 @@ public class PlayerDAOImpl implements PlayerDAO {
             }
         }
         return player;
+    }
+
+    @Override
+    public Player getByName(String name) throws SQLException {
+        Player player = null;
+        String query = """
+        SELECT p.id , p.name , p.position, 
+               t.id AS team_id, t.name AS team_name
+        FROM players p
+        JOIN teams t ON p.teams_id = t.id
+        WHERE p.name = ? OR p.name LIKE ? OR p.name LIKE ?
+        """;
+        try(PreparedStatement myStamt = getConnection().prepareStatement(query)) {
+            myStamt.setString(1, name);
+            myStamt.setString(2, "% " + name);
+            myStamt.setString(3, name + " %");// Busca solo nombres o apellidos completos
+            try (ResultSet myRes = myStamt.executeQuery()) {
+                if (myRes.next()) {
+                    player = createPlayerWithTeam(myRes);
+                }
+            }
+        }
+        return player;
+    }
+
+    @Override
+    public Player getByPosition(String name) throws SQLException {
+        Player player = null;
+        String query = """
+        SELECT p.id , p.name , p.position, 
+               t.id AS team_id, t.name AS team_name
+        FROM players p
+        JOIN teams t ON p.teams_id = t.id
+        WHERE p.name = ? OR p.name LIKE ? OR p.name LIKE ? AND p.position = ?
+        """;
+        try(PreparedStatement myStamt = getConnection().prepareStatement(query)) {
+            myStamt.setString(1, name);
+            myStamt.setString(2, "% " + name);
+            myStamt.setString(3, name + "%");// Busca solo nombres o apellidos completos
+            try (ResultSet myRes = myStamt.executeQuery()) {
+                if (myRes.next()) {
+                    player = createPlayerWithTeam(myRes);
+                }
+            }
+        }
+        return player;
+    }
+
+    @Override
+    public Player getByTeamId(String name) throws SQLException {
+        Player player = null;
+        String query = """
+        SELECT p.id , p.name , p.position, 
+               t.id AS team_id, t.name AS team_name
+        FROM players p
+        JOIN teams t ON p.teams_id = t.id
+        WHERE p.name = ? OR p.name LIKE ? OR p.name LIKE ? AND p.position = ?
+        """;
+        try(PreparedStatement myStamt = getConnection().prepareStatement(query)) {
+            myStamt.setString(1, name);
+            myStamt.setString(2, "% " + name);
+            myStamt.setString(3, name + "%");// Busca solo nombres o apellidos completos
+            try (ResultSet myRes = myStamt.executeQuery()) {
+                if (myRes.next()) {
+                    player = createPlayerWithTeam(myRes);
+                }
+            }
+        }
+        return player;
+    }
+
+    @Override
+    public Player getByLeagueId(String name) throws SQLException {
+        return null;
     }
 
 

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class PlayerController {
 
-    private PlayerDAOImpl playerDAO;
+    private final PlayerDAOImpl playerDAO;
 
     public PlayerController() throws SQLException {
         this.playerDAO = new PlayerDAOImpl();
@@ -22,5 +22,10 @@ public class PlayerController {
     // Método para obtener un jugador por ID
     public Player getPlayerById(int id) throws SQLException {
         return playerDAO.getById(id);
+    }
+
+    //Método para obtener un jugador por Nombre
+    public Player getPlayerByName(String name) throws SQLException {
+        return playerDAO.getByName(name);
     }
 }
