@@ -24,7 +24,7 @@ public class Main {
         */
         GameController game = new GameController();
         game.startGame();
-        //int puntos = obtenerPuntos("feeeeeeee");
+        int puntos = obtenerPuntos("feeeeeeee");
         //System.out.println(puntos);
 
 
