@@ -2,8 +2,8 @@ package co.edu.poli.WordShake.controller;
 
 import co.edu.poli.WordShake.model.Jugador;
 import co.edu.poli.WordShake.model.Player;
-import co.edu.poli.WordShake.model.PlayerDAOImpl;
-import co.edu.poli.WordShake.util.GameUtils;
+import co.edu.poli.WordShake.dao.PlayerDAOImpl;
+
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
@@ -44,7 +44,7 @@ public class GameController {
         player = playerDAO.getByName(input);
 
         if (player != null) {
-            System.out.println("✅ Jugador encontrado en la BD: " + player.getName());
+            System.out.println("✅ Jugador encontrado en la BD: " + player.getName() + " " + player.getTeam());
             Jugador.addWord(input);
         }else {
             System.out.println("❌ Jugador no encontrado");
@@ -57,7 +57,7 @@ public class GameController {
         }else {
         System.out.println("Puntuacion actual " + Jugador.getScore());
         }
-        System.out.println("🏁 Juego terminado. Palabras encontradas: " + Jugador.getFoundWords());
+        System.out.println("Palabras encontradas: " + Jugador.getFoundWords());
 
         }
 

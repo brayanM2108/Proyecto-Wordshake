@@ -1,4 +1,6 @@
-package co.edu.poli.WordShake.model;
+package co.edu.poli.WordShake.dao;
+import co.edu.poli.WordShake.model.Player;
+import co.edu.poli.WordShake.model.Team;
 import co.edu.poli.WordShake.util.DatabaseConnection;
 
 import java.sql.*;

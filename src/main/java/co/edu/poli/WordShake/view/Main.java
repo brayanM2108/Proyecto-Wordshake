@@ -1,18 +1,8 @@
 package co.edu.poli.WordShake.view;
 
 import co.edu.poli.WordShake.controller.GameController;
-import co.edu.poli.WordShake.controller.PlayerController;
-import co.edu.poli.WordShake.model.Jugador;
-import co.edu.poli.WordShake.model.Player;
-import co.edu.poli.WordShake.model.PlayerDAO;
-import co.edu.poli.WordShake.model.PlayerDAOImpl;
-import co.edu.poli.WordShake.util.DatabaseConnection;
 
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
-
-import static co.edu.poli.WordShake.model.Wordshake.obtenerPuntos;
 
 public class Main {
     public static void main(String[] args) throws SQLException {

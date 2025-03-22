@@ -1,4 +1,6 @@
-package co.edu.poli.WordShake.model;
+package co.edu.poli.WordShake.dao;
+
+import co.edu.poli.WordShake.model.Player;
 
 import java.sql.SQLException;
 import java.util.List;

@@ -1,7 +1,7 @@
 package co.edu.poli.WordShake.controller;
 
 import co.edu.poli.WordShake.model.Player;
-import co.edu.poli.WordShake.model.PlayerDAOImpl;
+import co.edu.poli.WordShake.dao.PlayerDAOImpl;
 
 import java.sql.SQLException;
 import java.util.List;
