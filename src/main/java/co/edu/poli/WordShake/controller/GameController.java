@@ -39,9 +39,9 @@ public class GameController {
 
         String input = scanner.nextLine().trim();
 
-        Player wordValidation = playerDAO.getByName(input);
+        Player wordValidation = playerDAO.getByAllLeagues(input);
 
-        player = playerDAO.getByName(input);
+        player = playerDAO.getByAllLeagues(input);
 
         if (player != null) {
             System.out.println("✅ Jugador encontrado en la BD: " + player.getName() + " " + player.getTeam());

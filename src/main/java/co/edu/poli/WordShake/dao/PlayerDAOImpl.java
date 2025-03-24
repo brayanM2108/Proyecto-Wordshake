@@ -1,6 +1,5 @@
 package co.edu.poli.WordShake.dao;
-import co.edu.poli.WordShake.model.Player;
-import co.edu.poli.WordShake.model.Team;
+import co.edu.poli.WordShake.model.*;
 import co.edu.poli.WordShake.util.DatabaseConnection;
 
 import java.sql.*;
@@ -21,8 +20,8 @@ public class PlayerDAOImpl implements PlayerDAO {
     public List<Player> findAll() throws SQLException {
         List<Player> players = new ArrayList<>();
         String query = "SELECT p.id, p.name, p.position, t.id AS team_id, t.name AS team_name " +
-                       "FROM players p " +
-                       "JOIN teams t ON p.teams_id = t.id";
+                "FROM players p " +
+                "JOIN teams t ON p.teams_id = t.id";
 
         try (
                 Statement myStamt = getConnection().createStatement();
@@ -37,11 +36,13 @@ public class PlayerDAOImpl implements PlayerDAO {
         return players;
 
     }
+
     @Override
     public Player getById(Integer id) throws SQLException {
         Player player = null;
         String query = """
-        SELECT p.id , p.name , p.position, 
+        
+                SELECT p.id , p.name , p.position, 
                t.id AS team_id, t.name AS team_name
         FROM players p
         JOIN teams t ON p.teams_id = t.id
@@ -59,13 +60,13 @@ public class PlayerDAOImpl implements PlayerDAO {
     }
 
     @Override
-    public Player getByName(String name) throws SQLException {
+    public Player getByAllLeagues(String name) throws SQLException {
         Player player = null;
-        String query = """
-        SELECT p.id , p.name , p.position, 
-               t.id AS team_id, t.name AS team_name
+        String query =
+                """
+        SELECT p.id , p.name , p.position, t.id AS team_id, t.name AS team_name
         FROM players p
-        JOIN teams t ON p.teams_id = t.id
+                 JOIN teams t ON p.teams_id = t.id
         WHERE p.name = ? OR p.name LIKE ? OR p.name LIKE ?
         """;
         try(PreparedStatement myStamt = getConnection().prepareStatement(query)) {
@@ -82,19 +83,22 @@ public class PlayerDAOImpl implements PlayerDAO {
     }
 
     @Override
-    public Player getByPosition(String name) throws SQLException {
+    public Player getByPosition(String name, PositionCategory position) throws SQLException {
         Player player = null;
         String query = """
-        SELECT p.id , p.name , p.position, 
-               t.id AS team_id, t.name AS team_name
-        FROM players p
+        
+        SELECT p.id , p.name , p.position, t.id AS team_id,
+                t.name AS team_name
+        FROM
+                players p
         JOIN teams t ON p.teams_id = t.id
-        WHERE p.name = ? OR p.name LIKE ? OR p.name LIKE ? AND p.position = ?
+        WHERE (p.name = ? OR p. name LIKE ? OR p.name LIKE ?) AND p.position = ?
         """;
         try(PreparedStatement myStamt = getConnection().prepareStatement(query)) {
             myStamt.setString(1, name);
             myStamt.setString(2, "% " + name);
             myStamt.setString(3, name + "%");// Busca solo nombres o apellidos completos
+            myStamt.setString(4, position.name());
             try (ResultSet myRes = myStamt.executeQuery()) {
                 if (myRes.next()) {
                     player = createPlayerWithTeam(myRes);
@@ -105,19 +109,58 @@ public class PlayerDAOImpl implements PlayerDAO {
     }
 
     @Override
-    public Player getByTeamId(String name) throws SQLException {
+    public Player getByTeamId(String name, Team teamId) throws SQLException {
         Player player = null;
-        String query = """
-        SELECT p.id , p.name , p.position, 
-               t.id AS team_id, t.name AS team_name
+
+        String query =
+                """
+                SELECT p.id , p.name , p.position,
+                       t.id AS team_id, t.name AS team_name
+                FROM players p
+                JOIN teams t ON p.teams_id = t.id
+                WHERE (p.name = ? OR p.name LIKE ? OR p.name LIKE ?) AND t.id = ?
+                """; // 🔹 Cambié teams_id a t.id para mayor claridad
+
+        try (PreparedStatement myStamt = getConnection().prepareStatement(query)) {
+            myStamt.setString(1, name);
+            myStamt.setString(2, "% " + name);
+            myStamt.setString(3, name + "%"); // Busca solo nombres o apellidos completos
+            myStamt.setInt(4, teamId.getId()); //  Asignar el teamId correctamente
+
+            try (ResultSet myRes = myStamt.executeQuery()) {
+                if (myRes.next()) {
+                    player = createPlayerWithTeam(myRes);
+                }
+            }
+        }
+        return player;
+    }
+
+
+    @Override
+    public Player getByLeague(String name, LeagueCategory league) throws SQLException {
+        Player player = null;
+
+        String query =
+        """
+        SELECT
+            p.id,
+            p.name,
+            p.position,
+            t.id AS team_id,
+            t.name AS team_name,
+            l.id AS league_id,
+            l.name AS league_name
         FROM players p
         JOIN teams t ON p.teams_id = t.id
-        WHERE p.name = ? OR p.name LIKE ? OR p.name LIKE ? AND p.position = ?
+        JOIN leagues l ON t.leagues_id = l.id
+        WHERE (p.name = ? OR p. name LIKE ? OR p.name LIKE ?) AND t.leagues_id = ?;
         """;
         try(PreparedStatement myStamt = getConnection().prepareStatement(query)) {
             myStamt.setString(1, name);
             myStamt.setString(2, "% " + name);
-            myStamt.setString(3, name + "%");// Busca solo nombres o apellidos completos
+            myStamt.setString(3, name + "%");
+            myStamt.setInt(4, league.getLeagueId());
             try (ResultSet myRes = myStamt.executeQuery()) {
                 if (myRes.next()) {
                     player = createPlayerWithTeam(myRes);
@@ -128,8 +171,40 @@ public class PlayerDAOImpl implements PlayerDAO {
     }
 
     @Override
-    public Player getByLeagueId(String name) throws SQLException {
-        return null;
+    public Player getByThreeLeagues(String name, LeagueCategory league1,LeagueCategory league2,LeagueCategory league3) throws SQLException {
+        Player player = null;
+
+        String query =
+                """
+                SELECT
+                    p.id,
+                    p.name,
+                    p.position,
+                    t.id AS team_id,
+                    t.name AS team_name,
+                    l.id AS league_id,
+                    l.name AS league_name
+                FROM players p
+                JOIN teams t ON p.teams_id = t.id
+                JOIN leagues l ON t.leagues_id = l.id
+                WHERE (p.name = ? OR p. name LIKE ? OR p.name LIKE ?)
+                AND (t.leagues_id = ? OR t.leagues_id = ? OR t.leagues_id = ?);
+                """;
+        try(PreparedStatement myStamt = getConnection().prepareStatement(query)) {
+            myStamt.setString(1, name);
+            myStamt.setString(2, "% " + name);
+            myStamt.setString(3, name + "%");
+            myStamt.setInt(4, league1.getLeagueId());
+            myStamt.setInt(5, league2.getLeagueId());
+            myStamt.setInt(6, league2.getLeagueId());
+
+            try (ResultSet myRes = myStamt.executeQuery()) {
+                if (myRes.next()) {
+                    player = createPlayerWithTeam(myRes);
+                }
+            }
+        }
+        return player;
     }
 
 
