@@ -31,7 +31,7 @@ public class PlayerController {
         return playerDAO.findByAllLeagues(name);
     }
     //Método para obtener un jugador de cualquier liga con una posición especificada
-    public Player getByPosition(String name, PositionCategory position) throws SQLException {
+    public Player getByPosition(String name, String position) throws SQLException {
         return playerDAO.findByPosition(name, position);
     }
     //Método para obtener un jugador con un equipo especificado

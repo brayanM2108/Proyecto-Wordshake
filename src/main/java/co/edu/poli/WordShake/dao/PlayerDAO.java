@@ -14,7 +14,7 @@ public interface PlayerDAO {
 
     Player findByAllLeagues(String name) throws SQLException;
 
-    Player findByPosition(String name, PositionCategory position) throws SQLException;
+    Player findByPosition(String name, String position) throws SQLException;
 
     Player findByTeamId(String name, Team teamId) throws SQLException;
 

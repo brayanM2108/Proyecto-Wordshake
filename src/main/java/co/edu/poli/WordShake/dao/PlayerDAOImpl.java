@@ -83,7 +83,7 @@ public class PlayerDAOImpl implements PlayerDAO {
     }
 
     @Override
-    public Player findByPosition(String name, PositionCategory position) throws SQLException {
+    public Player findByPosition(String name, String position) throws SQLException {
         Player player = null;
         String query = """
         
@@ -98,7 +98,7 @@ public class PlayerDAOImpl implements PlayerDAO {
             myStamt.setString(1, name);
             myStamt.setString(2, "% " + name);
             myStamt.setString(3, name + "%");// Busca solo nombres o apellidos completos
-            myStamt.setString(4, position.name());
+            myStamt.setString(4, position);
             try (ResultSet myRes = myStamt.executeQuery()) {
                 if (myRes.next()) {
                     player = createPlayerWithTeam(myRes);
