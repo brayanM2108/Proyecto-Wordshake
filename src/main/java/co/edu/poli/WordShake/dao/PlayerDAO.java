@@ -1,6 +1,5 @@
 package co.edu.poli.WordShake.dao;
 
-import co.edu.poli.WordShake.model.LeagueCategory;
 import co.edu.poli.WordShake.model.Player;
 import co.edu.poli.WordShake.model.PositionCategory;
 import co.edu.poli.WordShake.model.Team;
@@ -11,17 +10,17 @@ import java.util.List;
 public interface PlayerDAO {
     List<Player> findAll()throws SQLException;
 
-    Player getById(Integer id) throws SQLException;
+    Player findById(Integer id) throws SQLException;
 
-    Player getByAllLeagues(String name) throws SQLException;
+    Player findByAllLeagues(String name) throws SQLException;
 
-    Player getByPosition(String name, PositionCategory position) throws SQLException;
+    Player findByPosition(String name, PositionCategory position) throws SQLException;
 
-    Player getByTeamId(String name, Team teamId) throws SQLException;
+    Player findByTeamId(String name, Team teamId) throws SQLException;
 
-    Player getByLeague(String name, LeagueCategory league) throws SQLException;
+    Player findByLeague(String name, int league) throws SQLException;
 
-    Player getByThreeLeagues(String name,LeagueCategory league1, LeagueCategory league2, LeagueCategory league3) throws SQLException;
+    Player findByThreeLeagues(String name, int league1, int league2, int league3) throws SQLException;
 
 
 

@@ -25,7 +25,7 @@ public class PlayerDAOImpl implements PlayerDAO {
 
         try (
                 Statement myStamt = getConnection().createStatement();
-                ResultSet myRes = myStamt.executeQuery(query);) {
+                ResultSet myRes = myStamt.executeQuery(query)) {
 
             while (myRes.next()) {
                 Player player = createPlayerWithTeam(myRes);
@@ -38,11 +38,11 @@ public class PlayerDAOImpl implements PlayerDAO {
     }
 
     @Override
-    public Player getById(Integer id) throws SQLException {
+    public Player findById(Integer id) throws SQLException {
         Player player = null;
         String query = """
         
-                SELECT p.id , p.name , p.position, 
+                SELECT p.id , p.name , p.position,
                t.id AS team_id, t.name AS team_name
         FROM players p
         JOIN teams t ON p.teams_id = t.id
@@ -60,7 +60,7 @@ public class PlayerDAOImpl implements PlayerDAO {
     }
 
     @Override
-    public Player getByAllLeagues(String name) throws SQLException {
+    public Player findByAllLeagues(String name) throws SQLException {
         Player player = null;
         String query =
                 """
@@ -83,7 +83,7 @@ public class PlayerDAOImpl implements PlayerDAO {
     }
 
     @Override
-    public Player getByPosition(String name, PositionCategory position) throws SQLException {
+    public Player findByPosition(String name, PositionCategory position) throws SQLException {
         Player player = null;
         String query = """
         
@@ -109,7 +109,7 @@ public class PlayerDAOImpl implements PlayerDAO {
     }
 
     @Override
-    public Player getByTeamId(String name, Team teamId) throws SQLException {
+    public Player findByTeamId(String name, Team teamId) throws SQLException {
         Player player = null;
 
         String query =
@@ -138,7 +138,7 @@ public class PlayerDAOImpl implements PlayerDAO {
 
 
     @Override
-    public Player getByLeague(String name, LeagueCategory league) throws SQLException {
+    public Player findByLeague(String name, int league) throws SQLException {
         Player player = null;
 
         String query =
@@ -160,7 +160,7 @@ public class PlayerDAOImpl implements PlayerDAO {
             myStamt.setString(1, name);
             myStamt.setString(2, "% " + name);
             myStamt.setString(3, name + "%");
-            myStamt.setInt(4, league.getLeagueId());
+            myStamt.setInt(4, league);
             try (ResultSet myRes = myStamt.executeQuery()) {
                 if (myRes.next()) {
                     player = createPlayerWithTeam(myRes);
@@ -171,7 +171,7 @@ public class PlayerDAOImpl implements PlayerDAO {
     }
 
     @Override
-    public Player getByThreeLeagues(String name, LeagueCategory league1,LeagueCategory league2,LeagueCategory league3) throws SQLException {
+    public Player findByThreeLeagues(String name, int league1, int league2, int league3) throws SQLException {
         Player player = null;
 
         String query =
@@ -194,9 +194,9 @@ public class PlayerDAOImpl implements PlayerDAO {
             myStamt.setString(1, name);
             myStamt.setString(2, "% " + name);
             myStamt.setString(3, name + "%");
-            myStamt.setInt(4, league1.getLeagueId());
-            myStamt.setInt(5, league2.getLeagueId());
-            myStamt.setInt(6, league2.getLeagueId());
+            myStamt.setInt(4, league1);
+            myStamt.setInt(5, league2);
+            myStamt.setInt(6, league3);
 
             try (ResultSet myRes = myStamt.executeQuery()) {
                 if (myRes.next()) {

@@ -1,21 +1,14 @@
 package co.edu.poli.WordShake.model;
 
-public enum LeagueCategory {
+public class LeagueCategory {
 
-        PREMIER_LEAGUE(1),
-        LALIGA(2),
-        BUNDESLIGA(3),
-        SERIE_A(4),
-        LIGUE_1(5);
+        public static final int PREMIER_LEAGUE = 1;
+        public static final int LA_LIGA = 2;
+        public static final int BUNDESLIGA = 3;
+        public static final int SERIE_A = 4;
+        public static final int LIGUE_1 = 5;
 
-        private final int leagueId;
-
-        LeagueCategory(int leagueId) {
-            this.leagueId = leagueId;
+        private LeagueCategory() {
+                // Evita que se instancien objetos de esta clase
         }
-
-        public int getLeagueId() {
-            return leagueId;
-        }
-
 }

@@ -1,6 +1,5 @@
 package co.edu.poli.WordShake.controller;
 
-import co.edu.poli.WordShake.model.LeagueCategory;
 import co.edu.poli.WordShake.model.Player;
 import co.edu.poli.WordShake.dao.PlayerDAOImpl;
 import co.edu.poli.WordShake.model.PositionCategory;
@@ -24,28 +23,28 @@ public class PlayerController {
 
     // Método para obtener un jugador por ID
     public Player getPlayerById(int id) throws SQLException {
-        return playerDAO.getById(id);
+        return playerDAO.findById(id);
     }
 
     //Método para obtener un jugador de todas las ligas
     public Player getByAllLeagues(String name) throws SQLException {
-        return playerDAO.getByAllLeagues(name);
+        return playerDAO.findByAllLeagues(name);
     }
-    //Método para obtener un jugador de cualquier liga con una posicion especificada
+    //Método para obtener un jugador de cualquier liga con una posición especificada
     public Player getByPosition(String name, PositionCategory position) throws SQLException {
-        return playerDAO.getByPosition(name, position);
+        return playerDAO.findByPosition(name, position);
     }
     //Método para obtener un jugador con un equipo especificado
     public Player getByTeamId(String name, Team team) throws SQLException {
-        return playerDAO.getByTeamId(name, team);
+        return playerDAO.findByTeamId(name, team);
     }
     //Método para obtener un jugador de una liga especificada
-    public Player getByLeague(String name, LeagueCategory league) throws SQLException {
-        return playerDAO.getByLeague(name, league);
+    public Player getByLeague(String name, int league) throws SQLException {
+        return playerDAO.findByLeague(name, league);
     }
 
     //Método para obtener un jugador de tres ligas diferentes
-    public Player getByThreeLeagues (String name,LeagueCategory league1, LeagueCategory league2, LeagueCategory league3) throws SQLException {
-        return playerDAO.getByThreeLeagues(name, league1, league2, league3 );
+    public Player getByThreeLeagues (String name, int league1, int league2, int league3) throws SQLException {
+        return playerDAO.findByThreeLeagues(name, league1, league2, league3 );
     }
 }
