@@ -2,7 +2,6 @@ package co.edu.poli.WordShake.controller;
 
 import co.edu.poli.WordShake.model.Jugador;
 import co.edu.poli.WordShake.model.Player;
-import co.edu.poli.WordShake.dao.PlayerDAOImpl;
 import co.edu.poli.WordShake.model.PositionCategory;
 
 import java.sql.SQLException;
@@ -13,14 +12,14 @@ import static co.edu.poli.WordShake.util.GameUtils.generarLetras;
 
 public class GameController {
     private final Scanner scanner;
-    private final PlayerDAOImpl playerDAO;
+    private final PlayerController playerController;
     List<Character> letras = generarLetras(25, 3, 3);
 
 
 
 
     public GameController() throws SQLException {
-        this.playerDAO = new PlayerDAOImpl();
+        this.playerController = new PlayerController();
         this.scanner = new Scanner(System.in);
     }
 
@@ -39,7 +38,7 @@ public class GameController {
             String input = scanner.nextLine().trim();
 
             // Se almacena el jugador de la BD
-            Player player = playerDAO.findByPosition(input, PositionCategory.GOALKEEPER);
+            Player player = playerController.getByPosition(input, PositionCategory.MIDFIELDER);
 
             if (player != null) {
                 System.out.println("✅ Jugador encontrado en la BD: " + player.getName() + "/" + player.getTeam());
