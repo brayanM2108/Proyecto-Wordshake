@@ -1,8 +1,6 @@
 package co.edu.poli.WordShake.controller;
 
-import co.edu.poli.WordShake.model.Jugador;
-import co.edu.poli.WordShake.model.Player;
-import co.edu.poli.WordShake.model.PositionCategory;
+import co.edu.poli.WordShake.model.*;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -14,6 +12,17 @@ public class GameController {
     private final Scanner scanner;
     private final PlayerController playerController;
     List<Character> letras = generarLetras(25, 3, 3);
+    private DifficultyMode selectedMode;
+
+
+
+    public void setDifficulty(DifficultyMode mode) {
+        this.selectedMode = mode;
+        System.out.println("🔧 Dificultad seleccionada: " + mode.name());
+    }
+
+
+
 
 
 
@@ -24,7 +33,35 @@ public class GameController {
     }
 
     public void startGame() throws SQLException {
+
+        System.out.println("🎮 Bienvenido a WordShake");
+        System.out.println("Elige el modo de dificultad:");
+        System.out.println("1. FÁCIL");
+        System.out.println("2. NORMAL");
+        System.out.println("3. DIFÍCIL");
+        System.out.print("Opción: ");
+
+        int opcion = scanner.nextInt();
+        scanner.nextLine(); // Limpiar buffer
+
+        switch (opcion) {
+            case 1:
+                setDifficulty(DifficultyMode.EASY);
+                break;
+            case 2:
+                setDifficulty(DifficultyMode.MEDIUM);
+                break;
+            case 3:
+                setDifficulty(DifficultyMode.HARD);
+                break;
+            default:
+                System.out.println("❌ Opción inválida. Intenta de nuevo.");
+                return;
+        }
+
         System.out.println("🎮 Juego Iniciado");
+
+        //startTimer(selectedMode.getTimeLimitInSeconds());
 
         for (int i = 0; i < letras.size(); i++) {
             System.out.print(letras.get(i) + "\t");
@@ -34,11 +71,12 @@ public class GameController {
         }
 
         while (true) {
+
             System.out.print("Ingrese el nombre de un jugador: ");
             String input = scanner.nextLine().trim();
 
             // Se almacena el jugador de la BD
-            Player player = playerController.getByPosition(input, PositionCategory.MIDFIELDER);
+            Player player = playerController.getByLeague(input, LeagueCategory.PREMIER_LEAGUE);
 
             if (player != null) {
                 System.out.println("✅ Jugador encontrado en la BD: " + player.getName() + "/" + player.getTeam());
