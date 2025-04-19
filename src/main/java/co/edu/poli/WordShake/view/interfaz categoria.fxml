@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Seleccion_categoria"> 
+
+   <children>
+      <HBox layoutX="20.0" layoutY="50.0" spacing="50.0">
+         <children>
+            
+            <VBox spacing="20.0">
+               <children>
+                  <Label style="-fx-text-fill: #00FF00; -fx-font-size: 24px; -fx-font-weight: bold;" text="Selecciona una categoría" />
+                  <Button fx:id="btnPorPosicion" prefHeight="50.0" prefWidth="270.0" style="-fx-background-color: black; -fx-text-fill: #00FF00; -fx-border-color: #00FF00; -fx-border-width: 2px;" text="Jugadores por posición de todas las ligas" />
+                  <Button fx:id="btnEquipo" prefHeight="50.0" prefWidth="270.0" style="-fx-background-color: black; -fx-text-fill: #00FF00; -fx-border-color: #00FF00; -fx-border-width: 2px;" text="Jugadores de un equipo específico" />
+                  <Button fx:id="btnLiga" prefHeight="50.0" prefWidth="270.0" style="-fx-background-color: black; -fx-text-fill: #00FF00; -fx-border-color: #00FF00; -fx-border-width: 2px;" text="Jugadores de una liga específica" />
+                  <Button fx:id="btnTresLigas" prefHeight="50.0" prefWidth="270.0" style="-fx-background-color: black; -fx-text-fill: #00FF00; -fx-border-color: #00FF00; -fx-border-width: 2px;" text="Jugadores de tres ligas diferentes" />
+               </children>
+            </VBox>
+
+            
+            <ImageView fx:id="logo_del_juego" fitHeight="316.0" fitWidth="246.0" style="-fx-border-color: #00FF00; -fx-border-width: 2px;">
+               <image>
+                  <Image url="file:///C:/Users/stive/Desktop/wordshake/Proyecto-Wordshake/src/main/java/Logo/logo%20del%20videojuego.PNG" />
+               </image>
+            </ImageView>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>
