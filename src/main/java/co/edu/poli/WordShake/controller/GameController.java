@@ -1,94 +1,209 @@
 package co.edu.poli.WordShake.controller;
 
 import co.edu.poli.WordShake.model.*;
-
+import co.edu.poli.WordShake.util.GameUtils;
+import co.edu.poli.WordShake.util.SceneLoader;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.control.Button;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-
-import static co.edu.poli.WordShake.util.GameUtils.generarLetras;
+import static co.edu.poli.WordShake.util.GameUtils.generateLetters;
 
 public class GameController {
-    private final Scanner scanner;
-    private final PlayerController playerController;
-    List<Character> letras = generarLetras(25, 3, 3);
-    private DifficultyMode selectedMode;
+
+	@FXML
+	private Button btnNuevoJuego;
+
+	@FXML
+	private GridPane letterGrid;
+	@FXML
+	private TextField txtPalabra;
+
+	@FXML
+	private TableView<WordsPoints> tblPalabras;
+
+	@FXML
+	private TableColumn<WordsPoints, String> colPalabra;
+
+	@FXML
+	private TableColumn<WordsPoints, Integer> colPuntos;
+
+	private final ObservableList<WordsPoints> palabrasEncontradas = FXCollections.observableArrayList();
+	@FXML
+	private Label lblTiempo;
+
+	private final GameUtils gameUtils = new GameUtils();
+	private GameMode selectedGameMode;
+	private LeagueCategory selectedLeague;
+	private String selectedPosition;
+	private Team selectedTeam;
+	private final PlayerController playerController ;
+	private DifficultyMode difficulty;
+	private GameMode gameMode;
+	private boolean gameOver;
+	private List<Character> letrasGeneradas;
+	private boolean ultimaOportunidadActiva = false;
+
+	public void initGame(DifficultyMode difficulty, GameMode gameMode) {
+		this.difficulty = difficulty;
+		this.gameMode = gameMode;
+
+		System.out.println("Modo: " + gameMode);
+		System.out.println("Dificultad: " + difficulty);
+		gameUtils.startTimer(difficulty.getTimeLimitInSeconds(), lblTiempo, this::finalizarJuego); // 120 segundos
+		// Mostrar letras al iniciar juego
+		mostrarLetrasEnGrid(generateLetters(25, 4, 2)); //
+		colPalabra.setCellValueFactory(cellData -> cellData.getValue().palabraProperty());
+		colPuntos.setCellValueFactory(cellData -> cellData.getValue().puntosProperty().asObject());
+		tblPalabras.setItems(palabrasEncontradas);
+		System.out.println("Letras generadas: " + letrasGeneradas);
+
+	}
 
 
-
-    public void setDifficulty(DifficultyMode mode) {
-        this.selectedMode = mode;
-        System.out.println("🔧 Dificultad seleccionada: " + mode.name());
-    }
+	public GameController() throws SQLException {
+		this.playerController = new PlayerController();
+	}
 
 
+	@FXML
+	private void VerificarPalabra() throws SQLException {
+		String playerName = txtPalabra.getText().trim();
+		if (playerName.isEmpty()) {
+			System.out.println("Por favor ingresa un nombre válido.");
+			return;
+		}
+		// Validar letras del tablero
+		if (!GameUtils.palabraValidaConLetras(playerName, letrasGeneradas)) {
+			System.out.println("❌ La palabra contiene letras no disponibles en el tablero.");
+			Alert alert = new Alert(Alert.AlertType.WARNING);
+			alert.setTitle("Letra inválida");
+			alert.setHeaderText(null);
+			alert.setContentText("La palabra contiene letras no disponibles o en exceso.");
+			alert.show();
+			txtPalabra.clear();
+			return;
+		}
+		Player player = null;
+
+		switch (gameMode) {
+			case ALL_LEAGUES:
+				player = playerController.getByAllLeagues(playerName);
+				break;
+			case TRAINING:
+				player = playerController.getByAllLeagues(playerName);
+				break;
+			case BY_LEAGUE:
+				if (selectedLeague != null) {
+					player = playerController.getByLeague(playerName, selectedLeague.getId());
+				}
+				break;
+			case BY_THREE_LEAGUES:
+				player = playerController.getByThreeLeagues(
+						playerName,
+						LeagueCategory.PREMIER_LEAGUE.getId(),
+						LeagueCategory.LA_LIGA.getId(),
+						LeagueCategory.SERIE_A.getId()
+				);
+				break;
+			case BY_POSITION:
+				if (selectedPosition != null) {
+					player = playerController.getByPosition(playerName, selectedPosition);
+				}
+				break;
+			case BY_TEAM:
+				if (selectedTeam != null) {
+					player = playerController.getByTeamId(playerName, selectedTeam);
+				}
+				break;
+			default:
+
+				return;
+		}
+
+		if (player != null && !gameOver) {
+			System.out.println("✅ Jugador encontrado: " + player.getName());
+			Jugador.addWord(playerName);
+
+			// Añadir al TableView
+			int puntos = Jugador.pointsObtained(playerName);
+			palabrasEncontradas.add(new WordsPoints(playerName, puntos));
+		} else {
+			System.out.println("❌ Jugador no encontrado");
+		}
+		txtPalabra.clear();  // Limpiar el campo
+		// Verificar si era la última oportunidad
+		if (ultimaOportunidadActiva) {
+			gameOver = true;  // Ahora sí termina completamente
+			ultimaOportunidadActiva = false;
+
+			Alert finalAlert = new Alert(Alert.AlertType.INFORMATION);
+			finalAlert.setTitle("Fin del juego");
+			finalAlert.setHeaderText(null);
+			finalAlert.setContentText("🏁 Juego terminado. Puntuación final: " + Jugador.getScore());
+			finalAlert.showAndWait();
+		}
+	}
 
 
+	private void mostrarLetrasEnGrid(List<Character> letras) {
+
+		this.letrasGeneradas = new ArrayList<>(letras);  // Copia de seguridad
+
+		int index = 0;
+			for (int row = 0; row < 5; row++) {
+				for (int col = 0; col < 5; col++) {
+					if (index < letras.size()) {
+						char letra = letras.get(index++);
+						Label lbl = new Label(String.valueOf(letra));
+						lbl.setPrefSize(70, 57);
+						lbl.setStyle("-fx-background-color: #8BC7EA; -fx-border-radius: 5; -fx-background-radius: 10; " +
+								"-fx-font-size: 27px; -fx-font-weight: bold; -fx-text-fill: #50595F; " +
+								"-fx-alignment: center;");
+						letterGrid.add(lbl, col, row);
+					}
+				}
+			}
+		}
+
+	private void finalizarJuego() {
+		ultimaOportunidadActiva = true;
+		gameOver = false; // Para permitir ingresar una palabra más
+
+		Alert alert1 = new Alert(Alert.AlertType.INFORMATION);
+		alert1.setTitle("Última oportunidad");
+		alert1.setHeaderText(null);
+		alert1.setContentText("⏰ El tiempo ha terminado. Ingresa una última palabra.");
+		alert1.showAndWait();
+
+		txtPalabra.requestFocus();
+	}
+
+	@FXML
+		public void onReiniciarPartidaClick(ActionEvent actionEvent) {
+			mostrarLetrasEnGrid(generateLetters(25, 3, 3));
+			Jugador.reset();
+			palabrasEncontradas.clear();
+			txtPalabra.clear();
+			gameUtils.startTimer(difficulty.getTimeLimitInSeconds(), lblTiempo, this::finalizarJuego);
+		}
+
+	public void onGoHome(ActionEvent event) {
+		SceneLoader.loadScene("fxml/MainMenu.fxml", (Node) event.getSource());
+	}
+
+	public void onNuevoJuego(ActionEvent event) {
+		SceneLoader.loadScene("fxml/GameSetup.fxml", (Node) event.getSource());
 
 
-
-    public GameController() throws SQLException {
-        this.playerController = new PlayerController();
-        this.scanner = new Scanner(System.in);
-    }
-
-    public void startGame() throws SQLException {
-
-        System.out.println("🎮 Bienvenido a WordShake");
-        System.out.println("Elige el modo de dificultad:");
-        System.out.println("1. FÁCIL");
-        System.out.println("2. NORMAL");
-        System.out.println("3. DIFÍCIL");
-        System.out.print("Opción: ");
-
-        int opcion = scanner.nextInt();
-        scanner.nextLine(); // Limpiar buffer
-
-        switch (opcion) {
-            case 1:
-                setDifficulty(DifficultyMode.EASY);
-                break;
-            case 2:
-                setDifficulty(DifficultyMode.MEDIUM);
-                break;
-            case 3:
-                setDifficulty(DifficultyMode.HARD);
-                break;
-            default:
-                System.out.println("❌ Opción inválida. Intenta de nuevo.");
-                return;
-        }
-
-        System.out.println("🎮 Juego Iniciado");
-
-        //startTimer(selectedMode.getTimeLimitInSeconds());
-
-        for (int i = 0; i < letras.size(); i++) {
-            System.out.print(letras.get(i) + "\t");
-            if ((i + 1) % 5 == 0) {
-                System.out.println();
-            }
-        }
-
-        while (true) {
-
-            System.out.print("Ingrese el nombre de un jugador: ");
-            String input = scanner.nextLine().trim();
-
-            // Se almacena el jugador de la BD
-            Player player = playerController.getByLeague(input, LeagueCategory.PREMIER_LEAGUE);
-
-            if (player != null) {
-                System.out.println("✅ Jugador encontrado en la BD: " + player.getName() + "/" + player.getTeam());
-                Jugador.addWord(input);
-            } else {
-                System.out.println("❌ Jugador no encontrado");
-            }
-
-            System.out.println("Puntuación actual: " + Jugador.getScore());
-            System.out.println("Palabras encontradas: " + Jugador.getFoundWords());
-        }
-    }
-
+	}
 
 }
+

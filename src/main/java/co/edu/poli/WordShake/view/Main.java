@@ -1,42 +1,34 @@
 package co.edu.poli.WordShake.view;
 
-import co.edu.poli.WordShake.controller.GameController;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
-import java.sql.SQLException;
+// src/main/java/co/edu/poli/WordShake/view/Main.java
+public class Main extends Application {
 
-public class Main {
-    public static void main(String[] args) throws SQLException {
+    @Override
+    public void start(Stage stage) throws Exception {
+        // Cargar el archivo FXML
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainMenu.fxml"));
+        Parent root = loader.load();
 
-        /*  List<Character> letras = generarLetras(25, 3, 3);
+        // Crear la escena y establecer el estilo
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
 
-        // Imprimir el resultado
-          System.out.println(letras);
-        */
-        GameController game = new GameController();
-        game.startGame();
-        //int puntos = obtenerPuntos("feeeeeeee");
-        //System.out.println(puntos);
+        // Establecer la escena en el escenario
+        stage.setTitle("WordShake");
+        stage.setScene(scene);
+        stage.initStyle(StageStyle.UNDECORATED);
+        // Mostrar la ventana
+        stage.show();
+    }
 
-
-       /* try (Connection myConn = DatabaseConnection.getInstance()) {
-            PlayerController playerController = new PlayerController();
-            // Obtener jugadores con su equipo
-            System.out.println("🏆 Lista de jugadores:");
-
-            Player player = new Player();
-            String jugador = "gavi";
-
-
-            System.out.println(playerController.getPlayerByName(jugador));
-
-            //List<Player> players = playerController.getAllPlayers();
-
-
-            //for (Player player : players) {
-               // System.out.println("⚽ " + player.getName() + " - " + player.getPosition() + " (Equipo: " + player.getTeam().getName() + ")");
-            }
-        }
-*/
-
+    public static void main(String[] args) {
+        launch(args);  // Inicia la aplicación JavaFX
     }
 }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="600" prefWidth="800" style="-fx-background-color: linear-gradient(to bottom, #1f3b4d, #326489);"
+            xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21.0.7"
+            fx:controller="co.edu.poli.WordShake.controller.MainMenuController">
+
+    <!-- Logo y título -->
+    <VBox alignment="CENTER" layoutX="200" layoutY="100" spacing="20.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+
+        <!-- Título del juego -->
+        <Label style="-fx-font-size: 64px; -fx-font-weight: bold; -fx-text-fill: white; -fx-effect: dropshadow(gaussian, black, 4, 0, 2, 2);" text="WORDSHAKE" />
+
+        <!-- Botón Jugar -->
+        <Button fx:id="btnPlay" onAction="#onPlayClick" prefHeight="40" prefWidth="150" style="-fx-background-color: #2B3E50; -fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="Play" />
+
+        <!-- Botón Cómo jugar -->
+        <Button fx:id="btnHowToPlay" prefHeight="36" prefWidth="150" style="-fx-background-color: #3D5368; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" text="How to play" />
+
+    </VBox>
+
+    <!-- Botón de sonido (icono de mute) -->
+   
+
+</AnchorPane>

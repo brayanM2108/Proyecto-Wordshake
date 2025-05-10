@@ -1,5 +1,6 @@
 package co.edu.poli.WordShake.controller;
 
+import co.edu.poli.WordShake.model.GameMode;
 import co.edu.poli.WordShake.model.Player;
 import co.edu.poli.WordShake.dao.PlayerDAOImpl;
 import co.edu.poli.WordShake.model.Team;

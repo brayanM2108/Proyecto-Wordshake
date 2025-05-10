@@ -1,29 +1,19 @@
 package co.edu.poli.WordShake.model;
 
 public enum DifficultyMode {
-    EASY(300, true, false),     // 5 min, categorías simples
-    MEDIUM(180, true, true),    // 3 min, categorías combinadas
-    HARD(120, false, true);      // 2 min, categorías avanzadas
+    EASY(300),     // 5 minutos
+    MEDIUM(180 ),    // 3 minutos
+    HARD(20), //2 minutos
+    TRAINING(0);// tiempo ilimitado
 
     private final int timeLimitInSeconds;
-    private final boolean allowGeneralCategories;
-    private final boolean allowAdvancedCategories;
 
-    DifficultyMode(int timeLimitInSeconds, boolean allowGeneralCategories, boolean allowAdvancedCategories) {
+    DifficultyMode(int timeLimitInSeconds) {
         this.timeLimitInSeconds = timeLimitInSeconds;
-        this.allowGeneralCategories = allowGeneralCategories;
-        this.allowAdvancedCategories = allowAdvancedCategories;
     }
 
     public int getTimeLimitInSeconds() {
         return timeLimitInSeconds;
     }
 
-    public boolean allowsGeneralCategories() {
-        return allowGeneralCategories;
-    }
-
-    public boolean allowsAdvancedCategories() {
-        return allowAdvancedCategories;
-    }
 }

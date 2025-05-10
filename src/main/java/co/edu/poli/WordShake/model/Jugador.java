@@ -17,6 +17,10 @@ public class Jugador {
             score += pointsObtained(word); // Suma los puntos solo si es válida
         }
     }
+    public static void reset() {
+        score = 0;
+        foundWords.clear();
+    }
 
     public static int getScore() {
         return score;
@@ -25,4 +29,6 @@ public class Jugador {
     public static List<String> getFoundWords() {
         return foundWords;
     }
+
+
 }
