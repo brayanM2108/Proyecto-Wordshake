@@ -57,7 +57,12 @@ public class GameController {
 
 		System.out.println("Modo: " + gameMode);
 		System.out.println("Dificultad: " + difficulty);
-		gameUtils.startTimer(difficulty.getTimeLimitInSeconds(), lblTiempo, this::finalizarJuego); // 120 segundos
+		if (difficulty.getTimeLimitInSeconds() > 0) {
+			gameUtils.startTimer(difficulty.getTimeLimitInSeconds(), lblTiempo, this::finalizarJuego);
+		} else {
+			lblTiempo.setText("∞"); // Mostrar infinito o "Sin tiempo"
+		}
+
 		// Mostrar letras al iniciar juego
 		mostrarLetrasEnGrid(generateLetters(25, 4, 2)); //
 		colPalabra.setCellValueFactory(cellData -> cellData.getValue().palabraProperty());
@@ -94,13 +99,10 @@ public class GameController {
 		Player player = null;
 
 		switch (gameMode) {
-			case ALL_LEAGUES:
+			case ALL_LEAGUES, TRAINING:
 				player = playerController.getByAllLeagues(playerName);
 				break;
-			case TRAINING:
-				player = playerController.getByAllLeagues(playerName);
-				break;
-			case BY_LEAGUE:
+            case BY_LEAGUE:
 				if (selectedLeague != null) {
 					player = playerController.getByLeague(playerName, selectedLeague.getId());
 				}
@@ -188,7 +190,7 @@ public class GameController {
 
 	@FXML
 		public void onReiniciarPartidaClick(ActionEvent actionEvent) {
-			mostrarLetrasEnGrid(generateLetters(25, 3, 3));
+			mostrarLetrasEnGrid(generateLetters(25, 4, 2));
 			Jugador.reset();
 			palabrasEncontradas.clear();
 			txtPalabra.clear();
