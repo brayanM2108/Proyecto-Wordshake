@@ -15,11 +15,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import static co.edu.poli.WordShake.util.GameUtils.generateLetters;
-
+import co.edu.poli.WordShake.util.SoundsUtils.SoundUtils;
 public class GameController {
 
+
 	@FXML
-	private Button btnNuevoJuego;
+	public Button btnEnter;
 
 	@FXML
 	private GridPane letterGrid;
@@ -51,7 +52,8 @@ public class GameController {
 	private List<Character> letrasGeneradas;
 	private boolean ultimaOportunidadActiva = false;
 
-	public void initGame(DifficultyMode difficulty, GameMode gameMode) {
+
+    public void initGame(DifficultyMode difficulty, GameMode gameMode) {
 		this.difficulty = difficulty;
 		this.gameMode = gameMode;
 
@@ -80,80 +82,105 @@ public class GameController {
 
 	@FXML
 	private void VerificarPalabra() throws SQLException {
-		String playerName = txtPalabra.getText().trim();
-		if (playerName.isEmpty()) {
-			System.out.println("Por favor ingresa un nombre válido.");
-			return;
-		}
-		// Validar letras del tablero
-		if (!GameUtils.palabraValidaConLetras(playerName, letrasGeneradas)) {
-			System.out.println("❌ La palabra contiene letras no disponibles en el tablero.");
-			Alert alert = new Alert(Alert.AlertType.WARNING);
-			alert.setTitle("Letra inválida");
-			alert.setHeaderText(null);
-			alert.setContentText("La palabra contiene letras no disponibles o en exceso.");
-			alert.show();
-			txtPalabra.clear();
-			return;
-		}
-		Player player = null;
+			String playerName = txtPalabra.getText().trim();
+			if (playerName.isEmpty()) {
+				System.out.println("Por favor ingresa un nombre válido.");
+				return;
+			}
 
+			// Validar letras del tablero
+			/*if (!GameUtils.palabraValidaConLetras(playerName, letrasGeneradas)) {
+				mostrarAlerta("Letra inválida", "La palabra contiene letras no disponibles o en exceso.");
+				txtPalabra.clear();
+				return;
+			}*/
+
+			if (Jugador.getFoundWords().contains(playerName)) {
+				mostrarAlerta("Palabra repetida", "Ya has ingresado esta palabra antes.");
+				txtPalabra.clear();
+				return;
+			}
+
+			Player player = buscarJugador(playerName);
+			if (player != null && !gameOver) {
+				System.out.println("✅ Jugador encontrado: " + player.getName());
+				Jugador.addWord(playerName);
+				int puntos = Jugador.pointsObtained(playerName);
+				palabrasEncontradas.add(new WordsPoints(playerName, puntos));
+				SoundUtils.playCorrect();
+
+			} else {
+				System.out.println("❌ Jugador no encontrado");
+				SoundUtils.playError();
+			}
+
+			txtPalabra.clear();
+
+			if (ultimaOportunidadActiva) {
+                finalizarJuegoFinal();
+            }
+		}
+
+
+	private Player buscarJugador(String playerName) throws SQLException {
 		switch (gameMode) {
 			case ALL_LEAGUES, TRAINING:
-				player = playerController.getByAllLeagues(playerName);
-				break;
-            case BY_LEAGUE:
+				return playerController.getByAllLeagues(playerName);
+			case BY_LEAGUE:
 				if (selectedLeague != null) {
-					player = playerController.getByLeague(playerName, selectedLeague.getId());
+					return playerController.getByLeague(playerName, selectedLeague.getId());
 				}
 				break;
 			case BY_THREE_LEAGUES:
-				player = playerController.getByThreeLeagues(
+				return playerController.getByThreeLeagues(
 						playerName,
 						LeagueCategory.PREMIER_LEAGUE.getId(),
 						LeagueCategory.LA_LIGA.getId(),
 						LeagueCategory.SERIE_A.getId()
 				);
-				break;
 			case BY_POSITION:
 				if (selectedPosition != null) {
-					player = playerController.getByPosition(playerName, selectedPosition);
+					return playerController.getByPosition(playerName, selectedPosition);
 				}
 				break;
 			case BY_TEAM:
 				if (selectedTeam != null) {
-					player = playerController.getByTeamId(playerName, selectedTeam);
+					return playerController.getByTeamId(playerName, selectedTeam);
 				}
 				break;
-			default:
-
-				return;
 		}
-
-		if (player != null && !gameOver) {
-			System.out.println("✅ Jugador encontrado: " + player.getName());
-			Jugador.addWord(playerName);
-
-			// Añadir al TableView
-			int puntos = Jugador.pointsObtained(playerName);
-			palabrasEncontradas.add(new WordsPoints(playerName, puntos));
-		} else {
-			System.out.println("❌ Jugador no encontrado");
-		}
-		txtPalabra.clear();  // Limpiar el campo
-		// Verificar si era la última oportunidad
-		if (ultimaOportunidadActiva) {
-			gameOver = true;  // Ahora sí termina completamente
-			ultimaOportunidadActiva = false;
-
-			Alert finalAlert = new Alert(Alert.AlertType.INFORMATION);
-			finalAlert.setTitle("Fin del juego");
-			finalAlert.setHeaderText(null);
-			finalAlert.setContentText("🏁 Juego terminado. Puntuación final: " + Jugador.getScore());
-			finalAlert.showAndWait();
-		}
+		return null;
 	}
 
+
+	// Esta funcion finaliza el juego cuando se ingresa la palabra de la "última oportunidad"
+	private void finalizarJuegoFinal() {
+		gameOver = true;  // Ahora sí termina completamente
+		ultimaOportunidadActiva = false;
+		btnEnter.setDisable(true);
+		txtPalabra.setDisable(true);
+		Alert finalAlert = new Alert(Alert.AlertType.INFORMATION);
+		finalAlert.setTitle("Fin del juego");
+		finalAlert.setHeaderText(null);
+		finalAlert.setContentText("🏁 Juego terminado. Puntuación final: " + Jugador.getScore());
+		System.out.println("Palabras encontradas: " + Jugador.getFoundWords());
+		finalAlert.showAndWait();
+		}
+
+	// Esta funcion activa la funcionalidad de "última oportunidad"
+	private void finalizarJuego() {
+		ultimaOportunidadActiva = true;
+		gameOver = false; // Para permitir ingresar una palabra más
+		SoundUtils.playInit();
+
+		Alert alert1 = new Alert(Alert.AlertType.INFORMATION);
+		alert1.setTitle("Última oportunidad");
+		alert1.setHeaderText(null);
+		alert1.setContentText("⏰ El tiempo ha terminado. Ingresa una última palabra.");
+		alert1.showAndWait();
+
+		txtPalabra.requestFocus();
+	}
 
 	private void mostrarLetrasEnGrid(List<Character> letras) {
 
@@ -175,37 +202,68 @@ public class GameController {
 			}
 		}
 
-	private void finalizarJuego() {
-		ultimaOportunidadActiva = true;
-		gameOver = false; // Para permitir ingresar una palabra más
-
-		Alert alert1 = new Alert(Alert.AlertType.INFORMATION);
-		alert1.setTitle("Última oportunidad");
-		alert1.setHeaderText(null);
-		alert1.setContentText("⏰ El tiempo ha terminado. Ingresa una última palabra.");
-		alert1.showAndWait();
-
-		txtPalabra.requestFocus();
-	}
 
 	@FXML
-		public void onReiniciarPartidaClick(ActionEvent actionEvent) {
-			mostrarLetrasEnGrid(generateLetters(25, 4, 2));
-			Jugador.reset();
-			palabrasEncontradas.clear();
-			txtPalabra.clear();
-			gameUtils.startTimer(difficulty.getTimeLimitInSeconds(), lblTiempo, this::finalizarJuego);
-		}
+	private void mostrarAlerta(String titulo, String mensaje) {
+		Alert alert = new Alert(Alert.AlertType.WARNING);
+		alert.setTitle(titulo);
+		alert.setHeaderText(null);
+		alert.setContentText(mensaje);
+		alert.show();
+}
+	//Esta funcion reinicia la partida con nuevas letras en el tablero,
+	//reinicia el puntaje, el listado de palabras y lo necesario para un nuevo juego
+	@FXML
+	public void onReiniciarPartidaClick(ActionEvent actionEvent) {
+		mostrarLetrasEnGrid(generateLetters(25, 4, 2));
+
+		// Resetea el modelo
+		Jugador.reset();
+
+		// Limpia UI
+		palabrasEncontradas.clear();
+		txtPalabra.clear();
+
+		// Estado de juego
+		gameOver = false;
+		ultimaOportunidadActiva = false;
+		txtPalabra.setDisable(false);
+		btnEnter.setDisable(false);
+		// Inicia de nuevo el temporizador
+		gameUtils.startTimer(difficulty.getTimeLimitInSeconds(), lblTiempo, this::finalizarJuego);
+	}
+
 
 	public void onGoHome(ActionEvent event) {
+		gameUtils.stopTimer();
+		Jugador.reset();
+
+		// Limpia UI
+		palabrasEncontradas.clear();
+		txtPalabra.clear();
+
+		// Estado de juego
+		gameOver = false;
+		ultimaOportunidadActiva = false;
 		SceneLoader.loadScene("fxml/MainMenu.fxml", (Node) event.getSource());
+
 	}
 
 	public void onNuevoJuego(ActionEvent event) {
+		gameUtils.stopTimer();
+		Jugador.reset();
+
+		// Limpia UI
+		palabrasEncontradas.clear();
+		txtPalabra.clear();
+
+		// Estado de juego
+		gameOver = false;
+		ultimaOportunidadActiva = false;
 		SceneLoader.loadScene("fxml/GameSetup.fxml", (Node) event.getSource());
+
 
 
 	}
 
 }
-

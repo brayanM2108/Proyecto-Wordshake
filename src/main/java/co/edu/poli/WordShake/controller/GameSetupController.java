@@ -3,6 +3,7 @@ package co.edu.poli.WordShake.controller;
 import co.edu.poli.WordShake.model.DifficultyMode;
 import co.edu.poli.WordShake.model.GameMode;
 import co.edu.poli.WordShake.util.SceneLoader;
+import co.edu.poli.WordShake.util.SoundsUtils.SoundUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -92,7 +93,7 @@ public class GameSetupController {
             return;
         }
 
-
+        SoundUtils.playInit();
         SceneLoader.loadScene("fxml/Game.fxml", (Node) event.getSource(), (GameController controller) -> {
             controller.initGame(selectedDifficulty, selectedGameMode);
         });

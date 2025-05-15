@@ -99,7 +99,10 @@ public class GameUtils {
 
         timer.scheduleAtFixedRate(taskTimer, 0, 1000); // Cada 1 segundo
     }
+    public void stopTimer() {
+        if (timer != null) {
+            timer.cancel();
+        }
 
-
-
+    }
 }
