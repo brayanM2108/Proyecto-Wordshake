@@ -19,6 +19,7 @@ public enum LeagueCategory {
                 return id;
         }
 
+
         public String getDisplayName() {
                 return displayName;
         }

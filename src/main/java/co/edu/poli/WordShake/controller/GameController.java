@@ -51,14 +51,39 @@ public class GameController {
 	private boolean gameOver;
 	private List<Character> letrasGeneradas;
 	private boolean ultimaOportunidadActiva = false;
+	private int league1Id, league2Id, league3Id;
 
 
-    public void initGame(DifficultyMode difficulty, GameMode gameMode) {
+	public void initGame(DifficultyMode difficulty, GameMode gameMode) {
 		this.difficulty = difficulty;
 		this.gameMode = gameMode;
+		this.selectedLeague = null; // Por seguridad
 
 		System.out.println("Modo: " + gameMode);
 		System.out.println("Dificultad: " + difficulty);
+
+		if (difficulty.getTimeLimitInSeconds() > 0) {
+			gameUtils.startTimer(difficulty.getTimeLimitInSeconds(), lblTiempo, this::finalizarJuego);
+		} else {
+			lblTiempo.setText("∞");
+		}
+
+		mostrarLetrasEnGrid(generateLetters(25, 4, 2));
+		colPalabra.setCellValueFactory(cellData -> cellData.getValue().palabraProperty());
+		colPuntos.setCellValueFactory(cellData -> cellData.getValue().puntosProperty().asObject());
+		tblPalabras.setItems(palabrasEncontradas);
+		System.out.println("Letras generadas: " + letrasGeneradas);
+	}
+
+	public void initGame(DifficultyMode difficulty, GameMode gameMode, LeagueCategory league) {
+		this.difficulty = difficulty;
+		this.gameMode = gameMode;
+		this.selectedLeague = league;
+
+		System.out.println("Modo: " + gameMode);
+		System.out.println("Dificultad: " + difficulty);
+		System.out.println("Liga: " + (league != null ? league.name() : "Ninguna"));
+
 		if (difficulty.getTimeLimitInSeconds() > 0) {
 			gameUtils.startTimer(difficulty.getTimeLimitInSeconds(), lblTiempo, this::finalizarJuego);
 		} else {
@@ -66,12 +91,58 @@ public class GameController {
 		}
 
 		// Mostrar letras al iniciar juego
-		mostrarLetrasEnGrid(generateLetters(25, 4, 2)); //
+		mostrarLetrasEnGrid(generateLetters(25, 4, 2));
 		colPalabra.setCellValueFactory(cellData -> cellData.getValue().palabraProperty());
 		colPuntos.setCellValueFactory(cellData -> cellData.getValue().puntosProperty().asObject());
 		tblPalabras.setItems(palabrasEncontradas);
 		System.out.println("Letras generadas: " + letrasGeneradas);
+	}
 
+	public void initGame(DifficultyMode difficulty, GameMode gameMode, int league1Id, int league2Id, int league3Id) {
+		this.difficulty = difficulty;
+		this.gameMode = gameMode;
+		this.league1Id = league1Id;
+		this.league2Id = league2Id;
+		this.league3Id = league3Id;
+		System.out.println("Modo: " + gameMode);
+		System.out.println("Dificultad: " + difficulty);
+
+
+		if (difficulty.getTimeLimitInSeconds() > 0) {
+			gameUtils.startTimer(difficulty.getTimeLimitInSeconds(), lblTiempo, this::finalizarJuego);
+		} else {
+			lblTiempo.setText("∞"); // Mostrar infinito o "Sin tiempo"
+		}
+
+		// Mostrar letras al iniciar juego
+		mostrarLetrasEnGrid(generateLetters(25, 4, 2));
+		colPalabra.setCellValueFactory(cellData -> cellData.getValue().palabraProperty());
+		colPuntos.setCellValueFactory(cellData -> cellData.getValue().puntosProperty().asObject());
+		tblPalabras.setItems(palabrasEncontradas);
+		System.out.println("Letras generadas: " + letrasGeneradas);
+	}
+
+	public void initGame(DifficultyMode difficulty, GameMode gameMode, String selectedPosition) {
+		this.difficulty = difficulty;
+		this.gameMode = gameMode;
+		this.selectedPosition = selectedPosition;
+
+		System.out.println("Modo: " + gameMode);
+		System.out.println("Dificultad: " + difficulty);
+		System.out.println("Posicion: " + (selectedPosition != null  ));
+
+		if (difficulty.getTimeLimitInSeconds() > 0) {
+			gameUtils.startTimer(difficulty.getTimeLimitInSeconds(), lblTiempo, this::finalizarJuego);
+		} else {
+			lblTiempo.setText("∞"); // Mostrar infinito o "Sin tiempo"
+		}
+
+		// Mostrar letras al iniciar juego
+		mostrarLetrasEnGrid(generateLetters(25, 4, 2));
+		colPalabra.setCellValueFactory(cellData -> cellData.getValue().palabraProperty());
+		colPuntos.setCellValueFactory(cellData -> cellData.getValue().puntosProperty().asObject());
+		tblPalabras.setItems(palabrasEncontradas);
+		System.out.println("Letras generadas: " + letrasGeneradas);
 	}
 
 
@@ -134,9 +205,9 @@ public class GameController {
 			case BY_THREE_LEAGUES:
 				return playerController.getByThreeLeagues(
 						playerName,
-						LeagueCategory.PREMIER_LEAGUE.getId(),
-						LeagueCategory.LA_LIGA.getId(),
-						LeagueCategory.SERIE_A.getId()
+						league1Id,
+						league2Id,
+						league3Id
 				);
 			case BY_POSITION:
 				if (selectedPosition != null) {
@@ -265,5 +336,6 @@ public class GameController {
 
 
 	}
+
 
 }

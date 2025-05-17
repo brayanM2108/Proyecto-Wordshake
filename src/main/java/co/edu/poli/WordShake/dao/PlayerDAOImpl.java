@@ -97,7 +97,7 @@ public class PlayerDAOImpl implements PlayerDAO {
         try(PreparedStatement myStamt = getConnection().prepareStatement(query)) {
             myStamt.setString(1, name);
             myStamt.setString(2, "% " + name);
-            myStamt.setString(3, name + "%");// Busca solo nombres o apellidos completos
+            myStamt.setString(3, name + " %");// Busca solo nombres o apellidos completos
             myStamt.setString(4, position);
             try (ResultSet myRes = myStamt.executeQuery()) {
                 if (myRes.next()) {

@@ -7,6 +7,6 @@ public class PositionCategory {
     public static final String FORWARD = "Forward";
 
     public PositionCategory() {
-
     }
+
 }

@@ -86,6 +86,7 @@ public class GameSetupController {
         selectedButton.setStyle(selectedButton.getStyle() + "-fx-border-color: green; -fx-border-width: 3px; -fx-border-radius: 3px;");
     }
 
+
     @FXML
     private void onStartGame(ActionEvent event) {
         if (selectedDifficulty == null || selectedGameMode == null) {
@@ -94,10 +95,30 @@ public class GameSetupController {
         }
 
         SoundUtils.playInit();
-        SceneLoader.loadScene("fxml/Game.fxml", (Node) event.getSource(), (GameController controller) -> {
-            controller.initGame(selectedDifficulty, selectedGameMode);
-        });
+
+        if (selectedGameMode == GameMode.BY_LEAGUE) {
+            // Redirigir a selección de liga
+            SceneLoader.loadScene("fxml/GameSetupSelectLeague.fxml", (Node) event.getSource(), (GameSetupLeagueController controller) -> {
+                controller.initGame(selectedDifficulty, selectedGameMode);
+            });
+        } else if (selectedGameMode == GameMode.BY_POSITION) {
+            // Redirigir a selección de posición
+            SceneLoader.loadScene("fxml/GameSetupSelectPosition.fxml", (Node) event.getSource(), (GameSetupPositionController controller) -> {
+                controller.initGame(selectedDifficulty, selectedGameMode);
+            });
+        }else if (selectedGameMode == GameMode.BY_THREE_LEAGUES) {
+            // Redirigir a selección de Liga
+            SceneLoader.loadScene("fxml/GameSetupSelectThreeLeagues.fxml", (Node) event.getSource(), (GameSetupThreeLeagueController controller) -> {
+                controller.initGame(selectedDifficulty, selectedGameMode);
+            });
+        } else {
+            // Otros modos: ir directamente al juego
+            SceneLoader.loadScene("fxml/Game.fxml", (Node) event.getSource(), (GameController controller) -> {
+                controller.initGame(selectedDifficulty, selectedGameMode);
+            });
+        }
     }
+
 
 
     private void showAlert(String msg) {
@@ -106,4 +127,6 @@ public class GameSetupController {
         alert.setContentText(msg);
         alert.showAndWait();
     }
+
+
 }
