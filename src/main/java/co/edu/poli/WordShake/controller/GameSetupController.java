@@ -18,7 +18,7 @@ public class GameSetupController {
     @FXML
     private Button btnEasy, btnNormal, btnHard;
     @FXML
-    private Button btnMode1, btnMode2, btnMode3, btnMode4, btnMode5, btnMode6;
+    private Button btnMode1, btnMode2, btnMode4, btnMode5, btnMode6;
     @FXML
     private Button btnStartGame;
 
@@ -29,7 +29,7 @@ public class GameSetupController {
     public void initialize() {
         // Grupo de botones
         List<Button> difficultyButtons = List.of(btnEasy, btnNormal, btnHard);
-        List<Button> modeButtons = List.of(btnMode1, btnMode2, btnMode3, btnMode4, btnMode5, btnMode6);
+        List<Button> modeButtons = List.of(btnMode1, btnMode2,  btnMode4, btnMode5, btnMode6);
 
         // Asignar acciones a botones de dificultad
         btnEasy.setOnAction(e -> {
@@ -58,10 +58,6 @@ public class GameSetupController {
             setSelectedStyle(btnMode2, modeButtons);
         });
 
-        btnMode3.setOnAction(e -> {
-            selectedGameMode = GameMode.BY_TEAM;
-            setSelectedStyle(btnMode3, modeButtons);
-        });
 
         btnMode4.setOnAction(e -> {
             selectedGameMode = GameMode.BY_LEAGUE;

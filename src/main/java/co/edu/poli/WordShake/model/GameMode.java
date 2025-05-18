@@ -5,6 +5,5 @@ public enum GameMode {
     BY_LEAGUE,
     BY_THREE_LEAGUES,
     BY_POSITION,
-    BY_TEAM,
     TRAINING,
 }

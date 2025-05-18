@@ -41,10 +41,8 @@ public class GameController {
 	private Label lblTiempo;
 
 	private final GameUtils gameUtils = new GameUtils();
-	private GameMode selectedGameMode;
 	private LeagueCategory selectedLeague;
 	private String selectedPosition;
-	private Team selectedTeam;
 	private final PlayerController playerController ;
 	private DifficultyMode difficulty;
 	private GameMode gameMode;
@@ -212,11 +210,6 @@ public class GameController {
 			case BY_POSITION:
 				if (selectedPosition != null) {
 					return playerController.getByPosition(playerName, selectedPosition);
-				}
-				break;
-			case BY_TEAM:
-				if (selectedTeam != null) {
-					return playerController.getByTeamId(playerName, selectedTeam);
 				}
 				break;
 		}

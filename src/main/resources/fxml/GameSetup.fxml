@@ -25,9 +25,8 @@
         <VBox alignment="CENTER" spacing="12.0">
             <Button fx:id="btnMode1" prefHeight="40" prefWidth="200" style="-fx-background-color: #2B3E50; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" text="Clasico" />
             <Button fx:id="btnMode2" prefHeight="40" prefWidth="200" style="-fx-background-color: #2B3E50; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" text="Posicion" />
-            <Button fx:id="btnMode3" prefHeight="40" prefWidth="200" style="-fx-background-color: #2B3E50; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" text="Equipo" />
             <Button fx:id="btnMode4" prefHeight="40" prefWidth="200" style="-fx-background-color: #2B3E50; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" text="Liga" />
-            <Button fx:id="btnMode5" prefHeight="40" prefWidth="200" style="-fx-background-color: #2B3E50; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" text="Tres Ligas" />
+            <Button fx:id="btnMode5" prefHeight="40" prefWidth="200" style="-fx-background-color: #2B3E50; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" text="MultiLiga" />
             <Button fx:id="btnMode6" prefHeight="40" prefWidth="200" style="-fx-background-color: #2B3E50; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" text="Entrenamiento" />
         </VBox>
 

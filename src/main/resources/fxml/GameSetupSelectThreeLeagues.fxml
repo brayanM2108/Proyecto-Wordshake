@@ -3,8 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="600" prefWidth="800" style="-fx-background-color: linear-gradient(to bottom, #1f3b4d, #326489);" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="co.edu.poli.WordShake.controller.GameSetupThreeLeagueController">
+<AnchorPane prefHeight="600" prefWidth="800" style="-fx-background-color: linear-gradient(to bottom, #1f3b4d, #326489);" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.poli.WordShake.controller.GameSetupThreeLeagueController">
 
     <!-- Contenedor principal -->
     <VBox alignment="CENTER" layoutX="100" layoutY="30" spacing="30.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
@@ -13,7 +12,7 @@
 
 
         <!-- Título modos de juego -->
-        <Label style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: white; -fx-effect: dropshadow(gaussian, black, 4, 0, 2, 2);" text="SELECCIONAR LIGA A JUGAR" />
+        <Label style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: white; -fx-effect: dropshadow(gaussian, black, 4, 0, 2, 2);" text="SELECCIONE TRES LIGAS PARA JUGAR" />
 
         <!-- Botones de modo de juego -->
         <VBox alignment="CENTER" spacing="12.0">
