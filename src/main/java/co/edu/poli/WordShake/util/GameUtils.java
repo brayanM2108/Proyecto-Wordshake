@@ -1,108 +1,145 @@
 package co.edu.poli.WordShake.util;
 
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
-
 import java.util.Timer;
 import java.util.TimerTask;
-
-
 import java.util.*;
 
+/**
+ * Utility class for managing game mechanics like letter generation, word validation and timer.
+ */
 public class GameUtils {
-    private Timer timer;
-    private TimerTask taskTimer;
-    private int tiempoRestante;
-    private List<Character> letrasGeneradas;
+    /** Timer object to control countdown */
+    private  Timer timer;
+
+    /** Stores the remaining time in seconds */
+    private int remainingTime;
 
 
-    static public List<Character> generateLetters(int totalLetters, int numVocalSelected, int repetiticonVocals) {
-        String vocales = "AEIOU";
-        String consonantes = "BCDFGHJKLMNÑPQRSTVWXYZ";
-        Map<Character, Integer> contadorLetras = new HashMap<>();
+    /**
+     * Generates a random list of letters with specific rules for vowels and consonants.
+     * The method ensures there are specific number of vowels repeated a certain number of times,
+     * and consonants with a maximum of 3 repetitions each.
+     *
+     * @param totalLetters Total number of letters to generate
+     * @param numVowelsSelected Number of different vowels to select
+     * @param vowelRepetitions How many times each selected vowel should be repeated
+     * @return A shuffled list of characters following the specified rules
+     */
+    static public List<Character> generateLetters(int totalLetters, int numVowelsSelected, int vowelRepetitions) {
+        String vowels = "AEIOU";
+        String consonants = "BCDFGHJKLMNÑPQRSTVWXYZ";
+        Map<Character, Integer> letterCounter = new HashMap<>();
         Random r = new Random();
-        List<Character> letras = new ArrayList<>();
+        List<Character> letters = new ArrayList<>();
 
-        // Seleccionar 3 vocales aleatorias sin repetir
-        Set<Character> vocalesSeleccionadas = new HashSet<>();
-        while (vocalesSeleccionadas.size() < numVocalSelected) {
-            char v = vocales.charAt(r.nextInt(vocales.length()));
-            vocalesSeleccionadas.add(v);
+        // Select 3 random vowels without repetition
+        Set<Character> selectedVowels = new HashSet<>();
+        while (selectedVowels.size() < numVowelsSelected) {
+            char v = vowels.charAt(r.nextInt(vowels.length()));
+            selectedVowels.add(v);
         }
 
-        // Agregar cada vocal seleccionada 3 veces a la lista
-        for (char v : vocalesSeleccionadas) {
-            for (int i = 0; i < repetiticonVocals; i++) {
-                letras.add(v);
+        // Add each selected vowel 3 times to the list
+        for (char v : selectedVowels) {
+            for (int i = 0; i < vowelRepetitions; i++) {
+                letters.add(v);
             }
         }
 
-        // Calcular cuántas consonantes se necesitan para completar el total de letras
-        int numConsonantes = totalLetters - (numVocalSelected * repetiticonVocals);
+        // Calculate how many consonants are needed to complete total letters
+        int numConsonants = totalLetters - (numVowelsSelected * vowelRepetitions);
 
-        // Agregar consonantes aleatorias hasta completar el total de letras
-        while (letras.size() < totalLetters) {
-            char c = consonantes.charAt(r.nextInt(consonantes.length()));
+        // Add random consonants until total letters is reached
+        while (letters.size() < totalLetters) {
+            char c = consonants.charAt(r.nextInt(consonants.length()));
 
-            // Asegurar que la consonante no se repita más de 3 veces
-            if (contadorLetras.getOrDefault(c, 0) < 3) {
-                letras.add(c);
-                contadorLetras.put(c, contadorLetras.getOrDefault(c, 0) + 1);
+            // Ensure the consonant is not repeated more than 3 times
+            if (letterCounter.getOrDefault(c, 0) < 3) {
+                letters.add(c);
+                letterCounter.put(c, letterCounter.getOrDefault(c, 0) + 1);
             }
         }
 
-        // Mezclar las letras para evitar patrones predecibles
-        Collections.shuffle(letras);
+        // Shuffle letters to avoid predictable patterns
+        Collections.shuffle(letters);
 
-        return letras;
+        return letters;
     }
 
-    public static boolean palabraValidaConLetras(String palabra, List<Character> letrasGeneradas) {
-        List<Character> disponibles = new ArrayList<>(letrasGeneradas); // Copia mutable
+    /**
+     * Validates if a word can be formed using the available generated letters.
+     * Each letter from the generated list can only be used once.
+     *
+     * @param word The word to validate
+     * @param generatedLetters The list of available letters
+     * @return true if the word can be formed with the available letters, false otherwise
+     */
+    public static boolean isValidWordWithLetters(String word, List<Character> generatedLetters) {
+        List<Character> available = new ArrayList<>(generatedLetters); // Mutable copy
 
-        for (char c : palabra.toUpperCase().toCharArray()) {
-            if (!disponibles.contains(c)) {
-                return false; // ❌ Letra no disponible (o ya usada más veces de lo permitido)
+        for (char c : word.toUpperCase().toCharArray()) {
+            if (!available.contains(c)) {
+                return false; // Letter not available (or already used more times than allowed)
             } else {
-                disponibles.remove((Character) c); // ✅ Se "consume" una letra disponible
+                available.remove((Character) c); // "Consume" an available letter
             }
         }
-        return true; // ✔ Todas las letras están en la lista y en cantidad válida
+        return true; // All letters are in the list and in valid quantity
     }
 
-    public void startTimer(int seconds, Label labelTiempo, Runnable onTimeEnd) {
+    /**
+     * Starts a countdown timer that updates a label with the remaining time.
+     * If a timer is already running, it will be cancelled before starting the new one.
+     * The timer updates every second and displays time in MM:SS format.
+     *
+     * @param seconds Initial number of seconds for countdown
+     * @param timeLabel Label component to display the remaining time
+     * @param onTimeEnd Callback to execute when timer reaches zero
+     */
+    public void startTimer(int seconds, Label timeLabel, Runnable onTimeEnd) {
         if (timer != null) {
+            System.out.println("Timer anterior cancelado: " + timer);
             timer.cancel();
         }
 
-        tiempoRestante = seconds;
+        remainingTime = seconds;
         timer = new Timer();
+        System.out.println("Nuevo timer iniciado: " + timer);
 
-        taskTimer = new TimerTask() {
+        TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
                 Platform.runLater(() -> {
-                    if (tiempoRestante <= 0) {
+                    System.out.println("Tiempo restante: " + remainingTime + " segundos");
+                    if (remainingTime <= 0) {
+                        System.out.println("Timer finalizado");
                         timer.cancel();
-                        labelTiempo.setText("00:00");
-                        onTimeEnd.run();  // Ejecutar acción al terminar el tiempo
+                        timeLabel.setText("00:00");
+                        onTimeEnd.run();
                     } else {
-                        int minutes = tiempoRestante / 60;
-                        int seconds = tiempoRestante % 60;
-                        labelTiempo.setText(String.format("%02d:%02d", minutes, seconds));
-                        tiempoRestante--;
+                        int minutes = remainingTime / 60;
+                        int seconds = remainingTime % 60;
+                        timeLabel.setText(String.format("%02d:%02d", minutes, seconds));
+                        remainingTime--;
                     }
                 });
             }
         };
 
-        timer.scheduleAtFixedRate(taskTimer, 0, 1000); // Cada 1 segundo
+        timer.scheduleAtFixedRate(timerTask, 0, 1000);
     }
+    /**
+     * Stops and cancels the currently running timer if it exists.
+     */
     public void stopTimer() {
         if (timer != null) {
+            System.out.println("Deteniendo timer: " + timer);
             timer.cancel();
+            System.out.println("Timer cancelado");
         }
-
     }
+
+
 }

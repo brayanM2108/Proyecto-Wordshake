@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-// src/main/java/co/edu/poli/WordShake/view/Main.java
 public class Main extends Application {
 
     @Override

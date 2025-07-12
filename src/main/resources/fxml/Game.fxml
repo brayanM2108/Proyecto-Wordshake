@@ -87,7 +87,7 @@
         </VBox>
         <TextField fx:id="txtPalabra" layoutX="14.0" layoutY="359.0" prefHeight="38.0" prefWidth="334.0" promptText="Type word here" style="-fx-border-color: #bbb; -fx-background-radius: 5; -fx-border-radius: 5; -fx-padding: 6;" />
         <Button fx:id="btnCancelar" layoutX="191.0" layoutY="417.0" prefHeight="32.0" prefWidth="156.0" style="-fx-background-color: #d32f2f; -fx-text-fill: white; -fx-background-radius: 5;" text="Reiniciar Partida" onAction="#onReiniciarPartidaClick" />
-        <Button fx:id="btnEnter" layoutX="14.0" layoutY="417.0" prefHeight="32.0" prefWidth="156.0" style="-fx-background-color: #1976d2; -fx-text-fill: white; -fx-background-radius: 5;" text="Verificar Palabra" onAction="#VerificarPalabra"/>
+        <Button fx:id="btnEnter" layoutX="14.0" layoutY="417.0" prefHeight="32.0" prefWidth="156.0" style="-fx-background-color: #1976d2; -fx-text-fill: white; -fx-background-radius: 5;" text="Verificar Palabra" onAction="#onVerificarPalabra"/>
         <Button fx:id="btnHome" layoutX="542.0" layoutY="36.0" prefHeight="32.0" prefWidth="146.0" style="-fx-background-color: #d32f2f; -fx-text-fill: white;" text="Home" onAction="#onGoHome"/>
         <Button fx:id="btnNuevoJuego" layoutX="371.0" layoutY="36.0" prefHeight="32.0" prefWidth="146.0" style="-fx-background-color: #1976d2; -fx-text-fill: white;" text="Nuevo Juego" onAction="#onNuevoJuego"/>
         <Label layoutX="151.0" layoutY="10.0" prefHeight="18.0" prefWidth="60.0" style="-fx-font-size: 18px; -fx-text-fill: #333;" text="Tiempo" />

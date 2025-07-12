@@ -28,7 +28,7 @@ public class SceneLoader {
         }
     }
 
-    // Versión original para cuando no necesitas pasar datos
+    // Versión original para cuando no se necesitan pasar datos
     public static void loadScene(String fxmlPath, Node sourceNode) {
         try {
             Parent root = FXMLLoader.load(SceneLoader.class.getClassLoader().getResource(fxmlPath));

@@ -1,7 +1,7 @@
 package co.edu.poli.WordShake.controller;
 
 import co.edu.poli.WordShake.model.*;
-import co.edu.poli.WordShake.util.GameUtils;
+import co.edu.poli.WordShake.model.entity.Player;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -81,13 +81,13 @@ public class BackendController {
 
             if (player != null) {
                 System.out.println("✅ Jugador encontrado en la BD: " + player.getName() + "/" + player.getTeam());
-                Jugador.addWord(input);
+                GamePlayer.addWord(input);
             } else {
                 System.out.println("❌ Jugador no encontrado");
             }
 
-            System.out.println("Puntuación actual: " + Jugador.getScore());
-            System.out.println("Palabras encontradas: " + Jugador.getFoundWords());
+            System.out.println("Puntuación actual: " + GamePlayer.getScore());
+            System.out.println("Palabras encontradas: " + GamePlayer.getFoundWords());
         }
     }
 
