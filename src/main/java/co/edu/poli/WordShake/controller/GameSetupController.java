@@ -122,7 +122,7 @@ public class GameSetupController {
     @FXML
     private void onStartGame(ActionEvent event) {
         if (!gameSettings.isValid()) {
-            showAlert("Please select difficulty and game mode before starting.");
+            showAlert("Selecciona dificultad y modo de juego antes de iniciar la partida.");
             return;
         }
 

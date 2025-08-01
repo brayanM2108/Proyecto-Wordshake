@@ -100,21 +100,21 @@ public class GameUtils {
      */
     public void startTimer(int seconds, Label timeLabel, Runnable onTimeEnd) {
         if (timer != null) {
-            System.out.println("Timer anterior cancelado: " + timer);
+
             timer.cancel();
         }
 
         remainingTime = seconds;
         timer = new Timer();
-        System.out.println("Nuevo timer iniciado: " + timer);
+
 
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
                 Platform.runLater(() -> {
-                    System.out.println("Tiempo restante: " + remainingTime + " segundos");
+
                     if (remainingTime <= 0) {
-                        System.out.println("Timer finalizado");
+
                         timer.cancel();
                         timeLabel.setText("00:00");
                         onTimeEnd.run();
@@ -135,9 +135,9 @@ public class GameUtils {
      */
     public void stopTimer() {
         if (timer != null) {
-            System.out.println("Deteniendo timer: " + timer);
+
             timer.cancel();
-            System.out.println("Timer cancelado");
+
         }
     }
 
